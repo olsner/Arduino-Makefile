@@ -1073,7 +1073,7 @@ ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
 endif
 LDFLAGS       += -$(MCU_FLAG_NAME)=$(MCU) -Wl,--gc-sections -O$(OPTIMIZATION_LEVEL)
 ifeq ($(shell expr $(CC_VERNUM) '>' 490), 1)
-    LDFLAGS += -flto -fuse-linker-plugin
+    LDFLAGS += -flto=jobserver -fuse-linker-plugin
 endif
 SIZEFLAGS     ?= --mcu=$(MCU) -C
 
@@ -1443,7 +1443,7 @@ pre-build:
 		$(call runscript_if_exists,$(PRE_BUILD_HOOK))
 
 $(TARGET_ELF): 	$(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS)
-		$(CC) $(LDFLAGS) -o $@ $(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS) $(OTHER_LIBS) -lc -lm $(LINKER_SCRIPTS)
+		+$(CC) $(LDFLAGS) -o $@ $(LOCAL_OBJS) $(CORE_LIB) $(OTHER_OBJS) $(OTHER_LIBS) -lc -lm $(LINKER_SCRIPTS)
 
 $(CORE_LIB):	$(CORE_OBJS) $(LIB_OBJS) $(PLATFORM_LIB_OBJS) $(USER_LIB_OBJS)
 		$(AR) rcs $@ $(CORE_OBJS) $(LIB_OBJS) $(PLATFORM_LIB_OBJS) $(USER_LIB_OBJS)
